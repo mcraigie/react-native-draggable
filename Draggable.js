@@ -48,6 +48,8 @@ export default function Draggable(props) {
     minY,
     maxX,
     maxY,
+    dragItemStyle,
+    transformMovement,
   } = props;
 
   // The Animated object housing our xy value so that we can spring back
@@ -86,7 +88,6 @@ export default function Draggable(props) {
       toValue: newOffset || originalOffset,
       useNativeDriver: false,
     }).start();
-
   }, [pan]);
 
   const onPanResponderRelease = React.useCallback(
@@ -119,21 +120,34 @@ export default function Draggable(props) {
 
   const handleOnDrag = React.useCallback(
     (e, gestureState) => {
-      const {dx, dy} = gestureState;
+      let changeX, changeY;
+
+      if (transformMovement) {
+        const {dx, dy} = transformMovement(gestureState);
+
+        changeX = dx;
+        changeY = dy;
+      } else {
+        const {dx, dy} = gestureState;
+
+        changeX = dx;
+        changeY = dy;
+      }
+
       const {top, right, left, bottom} = startBounds.current;
       const far = 999999999;
-      const changeX = clamp(
-        dx,
+      changeX = clamp(
+        changeX,
         Number.isFinite(minX) ? minX - left : -far,
         Number.isFinite(maxX) ? maxX - right : far,
       );
-      const changeY = clamp(
-        dy,
+      changeY = clamp(
+        changeY,
         Number.isFinite(minY) ? minY - top : -far,
         Number.isFinite(maxY) ? maxY - bottom : far,
       );
       pan.current.setValue({x: changeX, y: changeY});
-      onDrag(e, gestureState);
+      onDrag(e, gestureState, {dx: changeX, dy: changeY});
     },
     [maxX, maxY, minX, minY, onDrag],
   );
@@ -164,13 +178,13 @@ export default function Draggable(props) {
     if (!shouldReverse) {
       curPan.addListener((c) => (offsetFromStart.current = c));
     } else {
-        reversePosition();
+      reversePosition();
     }
     return () => {
       curPan.removeAllListeners();
     };
   }, [shouldReverse]);
-  
+
   const positionCss = React.useMemo(() => {
     const Window = Dimensions.get('window');
     return {
@@ -207,6 +221,7 @@ export default function Draggable(props) {
       justifyContent: 'center',
       width: renderSize,
       height: renderSize,
+      ...dragItemStyle,
     };
   }, [children, isCircle, renderColor, renderSize, x, y, z]);
 
