@@ -320,7 +320,7 @@ Draggable.defaultProps = {
 
 Draggable.propTypes = {
   /**** props that should probably be removed in favor of "children" */
-  renderText: PropTypes.string,
+  // renderText: PropTypes.string,
   isCircle: PropTypes.bool,
   renderSize: PropTypes.number,
   imageSource: PropTypes.number,
