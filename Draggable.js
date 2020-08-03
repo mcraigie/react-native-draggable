@@ -23,6 +23,7 @@ function clamp(number, min, max) {
 export default function Draggable(props) {
   const {
     renderText,
+    renderIcon,
     isCircle,
     renderSize,
     imageSource,
@@ -235,6 +236,8 @@ export default function Draggable(props) {
           source={imageSource}
         />
       );
+    } else if (renderIcon) {
+      return renderIcon;
     } else {
       return <Text style={styles.text}>{renderText}</Text>;
     }
@@ -320,11 +323,12 @@ Draggable.defaultProps = {
 
 Draggable.propTypes = {
   /**** props that should probably be removed in favor of "children" */
-  // renderText: PropTypes.string,
+  renderText: PropTypes.string,
   isCircle: PropTypes.bool,
   renderSize: PropTypes.number,
   imageSource: PropTypes.number,
   renderColor: PropTypes.string,
+  renderIcon: PropTypes.element,
   /**** */
   children: PropTypes.element,
   shouldReverse: PropTypes.bool,
