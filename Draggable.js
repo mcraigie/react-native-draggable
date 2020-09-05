@@ -52,6 +52,7 @@ export default function Draggable(props) {
     maxY,
     dragItemStyle,
     transformMovement,
+    animationConfig,
   } = props;
 
   // The Animated object housing our xy value so that we can spring back
@@ -89,6 +90,7 @@ export default function Draggable(props) {
     Animated.spring(pan.current, {
       toValue: newOffset || originalOffset,
       useNativeDriver: false,
+      ...animationConfig,
     }).start(onReverseComplete);
   }, [pan]);
 
