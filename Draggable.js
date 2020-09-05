@@ -42,6 +42,7 @@ export default function Draggable(props) {
     onPressIn,
     onPressOut,
     onRelease,
+    onReverseComplete,
     x,
     y,
     z,
@@ -88,7 +89,7 @@ export default function Draggable(props) {
     Animated.spring(pan.current, {
       toValue: newOffset || originalOffset,
       useNativeDriver: false,
-    }).start();
+    }).start(onReverseComplete);
   }, [pan]);
 
   const onPanResponderRelease = React.useCallback(
